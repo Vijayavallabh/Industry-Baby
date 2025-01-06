@@ -37,9 +37,9 @@ def knn_impute_column(df, column_name, n_neighbors=5):
     df[[column_name]] = imputer.fit_transform(df[[column_name]])
     return df
 
-def clean_data(filepath):
+def clean_data(df):
     # Read data
-    df = pd.read_csv(filepath)
+    
     
     # Drop unnecessary columns
     df.drop(['ID','Customer_ID','Month','Name','SSN', 'Type_of_Loan', 
@@ -65,7 +65,9 @@ def clean_data(filepath):
         df[col] = pd.to_numeric(df[col], errors='coerce')
         df = df[df[col] >= 0]
         df = knn_impute_column(df, col)
-
+    
+    
+    
     # Clean Credit Mix
     df['Credit_Mix'].fillna('Unknown', inplace=True)
 
@@ -100,11 +102,3 @@ def clean_data(filepath):
     df['Monthly_expense'] = df['Monthly_expense'].astype(float)
 
     return df
-
-if __name__ == "__main__":
-    input_path = r"C:\Users\HP\Downloads\Industry-Baby\datasets\test.csv"
-    output_path = "Creditscore_test_cleaned.csv"
-    
-    df = clean_data(input_path)
-    df.to_csv(output_path, index=False)
-    print(f"Cleaned data saved to {output_path}")
